@@ -81,6 +81,7 @@ where
     root: bool,
     current_tag: String,
     current_tag_attrs: Option<HashMap<&'static str, String>>,
+    encoding: Option<&'static str>,
 }
 
 impl<W> Serializer<W>
@@ -93,11 +94,18 @@ where
             root: true,
             current_tag: "".into(),
             current_tag_attrs: None,
+            encoding: Some("UTF-8"),
         }
     }
 
     pub fn new(writer: W) -> Self {
         Self::new_from_writer(EmitterConfig::new().create_writer(writer))
+    }
+
+    /// Builder function that sets the XML encoding attribute.
+    pub fn with_encoding(mut self, encoding: &'static str) -> Self {
+        self.encoding = Some(encoding);
+        self
     }
 
     fn next(&mut self, event: XmlEvent) -> Result<()> {
@@ -111,7 +119,7 @@ where
 
     fn start_document(&mut self) -> Result<()> {
         self.next(XmlEvent::StartDocument {
-            encoding: Default::default(),
+            encoding: self.encoding,
             standalone: Default::default(),
             version: xml::common::XmlVersion::Version10,
         })
