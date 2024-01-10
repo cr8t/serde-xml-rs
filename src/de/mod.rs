@@ -1,5 +1,6 @@
 use std::{io::Read, marker::PhantomData};
 
+#[cfg(feature = "log")]
 use log::trace;
 use serde::de::{self, Unexpected};
 use serde::forward_to_deserialize_any;
@@ -154,6 +155,7 @@ impl<'de, R: Read, B: BufferedXmlReader<R>> Deserializer<R, B> {
     fn peek(&mut self) -> Result<&XmlEvent> {
         let peeked = self.buffered_reader.peek()?;
 
+        #[cfg(feature = "log")]
         trace!("Peeked {:?}", peeked);
         Ok(peeked)
     }
@@ -171,6 +173,7 @@ impl<'de, R: Read, B: BufferedXmlReader<R>> Deserializer<R, B> {
             }
             _ => {}
         }
+        #[cfg(feature = "log")]
         trace!("Fetched {:?}", next);
         Ok(next)
     }
