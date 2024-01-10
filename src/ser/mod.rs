@@ -9,6 +9,7 @@ use self::{
     tuple::TupleSerializer,
 };
 use crate::error::{Error, Result};
+#[cfg(feature = "log")]
 use log::debug;
 use serde::ser::Serialize;
 use std::{collections::HashMap, io::Write};
@@ -269,6 +270,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     }
 
     fn serialize_none(self) -> Result<Self::Ok> {
+        #[cfg(feature = "log")]
         debug!("None");
         let must_close_tag = self.build_start_tag()?;
         if must_close_tag {
@@ -281,11 +283,13 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     where
         T: Serialize,
     {
+        #[cfg(feature = "log")]
         debug!("Some");
         value.serialize(self)
     }
 
     fn serialize_unit(self) -> Result<Self::Ok> {
+        #[cfg(feature = "log")]
         debug!("Unit");
         let must_close_tag = self.build_start_tag()?;
         if must_close_tag {
@@ -295,6 +299,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     }
 
     fn serialize_unit_struct(self, name: &'static str) -> Result<Self::Ok> {
+        #[cfg(feature = "log")]
         debug!("Unit struct {}", name);
         self.serialize_unit()
     }
@@ -305,6 +310,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<Self::Ok> {
+        #[cfg(feature = "log")]
         debug!("Unit variant {}::{}", name, variant);
         self.start_tag(variant, HashMap::new())?;
         self.serialize_unit()?;
@@ -316,6 +322,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     where
         T: Serialize,
     {
+        #[cfg(feature = "log")]
         debug!("Newtype struct {}", name);
         value.serialize(self)
     }
@@ -332,6 +339,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     {
         let must_close_tag = self.build_start_tag()?;
 
+        #[cfg(feature = "log")]
         debug!("Newtype variant {}::{}", name, variant);
         self.open_tag(variant)?;
         value.serialize(&mut *self)?;
@@ -343,11 +351,13 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     }
 
     fn serialize_seq(self, _len: Option<usize>) -> Result<Self::SerializeSeq> {
+        #[cfg(feature = "log")]
         debug!("Sequence");
         Ok(SeqSeralizer::new(self))
     }
 
     fn serialize_tuple(self, _len: usize) -> Result<Self::SerializeTuple> {
+        #[cfg(feature = "log")]
         debug!("Tuple");
         let must_close_tag = self.build_start_tag()?;
         Ok(TupleSerializer::new(self, must_close_tag))
@@ -358,6 +368,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
         name: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleStruct> {
+        #[cfg(feature = "log")]
         debug!("Tuple struct {}", name);
         let must_close_tag = self.build_start_tag()?;
         Ok(TupleSerializer::new(self, must_close_tag))
@@ -370,6 +381,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
         variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
+        #[cfg(feature = "log")]
         debug!("Tuple variant {}::{}", name, variant);
         let must_close_tag = self.build_start_tag()?;
         self.start_tag(variant, HashMap::new())?;
@@ -384,6 +396,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     fn serialize_struct(self, name: &'static str, _len: usize) -> Result<Self::SerializeStruct> {
         self.open_root_tag(name)?;
 
+        #[cfg(feature = "log")]
         debug!("Struct {}", name);
         Ok(StructSerializer::new(self, false))
     }
@@ -397,6 +410,7 @@ impl<'ser, W: Write> serde::ser::Serializer for &'ser mut Serializer<W> {
     ) -> Result<Self::SerializeStructVariant> {
         self.open_root_tag(name)?;
 
+        #[cfg(feature = "log")]
         debug!("Struct variant {}", variant);
         let must_close_tag = self.build_start_tag()?;
         self.open_tag(variant)?;

@@ -1,6 +1,7 @@
 mod common;
 
 use common::init_logger;
+#[cfg(feature = "log")]
 use log::info;
 use serde::Deserialize;
 use serde_xml_rs::from_str;
@@ -23,6 +24,7 @@ fn simple_struct_from_attributes_should_fail() {
     match item {
         Ok(_) => assert!(false),
         Err(e) => {
+            #[cfg(feature = "log")]
             info!("simple_struct_from_attributes_should_fail(): {}", e);
             assert!(true)
         }
@@ -42,6 +44,7 @@ fn multiple_roots_attributes_should_fail() {
     match item {
         Ok(_) => assert!(false),
         Err(e) => {
+            #[cfg(feature = "log")]
             info!("multiple_roots_attributes_should_fail(): {}", e);
             assert!(true)
         }
