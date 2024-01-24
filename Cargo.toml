@@ -1,9 +1,9 @@
 [package]
-authors = ["Ingvar Stepanyan <me@rreverser.com>"]
-description = "xml-rs based deserializer for Serde (compatible with 0.9+)"
+authors = ["Ingvar Stepanyan <me@rreverser.com>", "cr8t <cr8t@users.noreply.github.com>"]
+description = "Maintained fork of xml-rs based deserializer for Serde (compatible with 0.9+)"
 license = "MIT"
-name = "serde-xml-rs"
-repository = "https://github.com/RReverser/serde-xml-rs"
+name = "serde-xml-rust"
+repository = "https://github.com/cr8t/serde-xml-rs"
 version = "0.6.0"
 edition = "2018"
 
